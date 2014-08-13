@@ -1,0 +1,47 @@
+defaultTasks 'clean', 'war'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'war'
+
+sourceCompatibility = 1.6
+
+repositories {
+	mavenCentral()
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.0'
+}
+
+// Netflix dependencies up to date 2014-08-13
+
+dependencies {
+	compile 'com.netflix.karyon:karyon-core:1.0.25'
+	compile 'org.slf4j:slf4j-api:1.7.2'
+	
+	compile 'com.sun.jersey.contribs:jersey-guice:1.17.1'
+	compile 'com.sun.jersey:jersey-bundle:1.17.1'
+
+	// logging
+	// netflix uses slf4j
+	runtime 'org.slf4j:slf4j-api:1.7.2'
+	// use log4j under slf4j
+	runtime 'org.slf4j:slf4j-log4j12:1.7.2'
+	// don't include slf4j simple
+	providedRuntime 'org.slf4j:slf4j-simple:1.7.0@jar'
+
+	// jersey
+	runtime 'com.sun.jersey:jersey-server:1.17.1'
+	runtime 'com.sun.jersey:jersey-json:1.17.1'
+
+	// netflix runtime components
+	runtime 'com.netflix.karyon:karyon-extensions:1.0.25'
+	runtime 'com.netflix.karyon:karyon-admin-web:1.0.25'
+		
+	// skip the JEE components that this app server provides
+	providedRuntime 'javax:javaee-web-api:6.0'
+	providedRuntime 'javax.servlet:servlet-api:2.5@jar'
+	providedRuntime 'org.mortbay.jetty:servlet-api:2.5-20081211@jar'
+	providedRuntime 'org.eclipse.jetty.orbit:javax.servlet:2.5.0.v201103041518'
+}
