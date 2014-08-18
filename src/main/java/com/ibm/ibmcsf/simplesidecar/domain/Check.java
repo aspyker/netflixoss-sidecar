@@ -1,5 +1,7 @@
 package com.ibm.ibmcsf.simplesidecar.domain;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class Check {
 	String id;
 	String description;
@@ -8,7 +10,7 @@ public class Check {
 	String workingDir;
 	String classToCall;
 	StatusType lastStatus;
-	long lastStatusRepeated;
+	AtomicLong lastStatusRepeated;
 	
 	public enum StatusType { UNKNOWN, HEALTHY, WARN, UNHEALTHY };
 	
@@ -21,6 +23,7 @@ public class Check {
 		this.workingDir = workingDir;
 		this.classToCall = classToCall;
 		this.lastStatus = StatusType.UNKNOWN;
+		lastStatusRepeated = new AtomicLong(0);
 	}
 	
 	public String getId() {
@@ -73,16 +76,20 @@ public class Check {
 	
 	public void addStatus(StatusType type) {
 		if (type == lastStatus) {
-			lastStatusRepeated++;
+			lastStatusRepeated.getAndIncrement();
 		}
 		else {
-			lastStatusRepeated = 1;
+			lastStatusRepeated.set(1);
 		}
 		lastStatus = type;
 	}
 	
-	public StatusType getCurrentStatus(StatusType type) {
+	public StatusType getCurrentStatus() {
 		return lastStatus;
+	}
+	
+	public long getLastStatusRepeated() {
+		return lastStatusRepeated.get();
 	}
 
 	@Override

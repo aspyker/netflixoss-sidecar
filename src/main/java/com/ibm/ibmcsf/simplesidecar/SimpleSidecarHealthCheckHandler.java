@@ -15,19 +15,26 @@
 *******************************************************************************/
 package com.ibm.ibmcsf.simplesidecar;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ibm.ibmcsf.simplesidecar.checks.CheckManager;
 import com.netflix.karyon.spi.HealthCheckHandler;
 
 public class SimpleSidecarHealthCheckHandler implements HealthCheckHandler {
 	private static final Logger logger = LoggerFactory.getLogger(SimpleSidecarREST.class);
 	
+	@Inject
+	CheckManager checkManager; 
+	
 	@Override
 	public int getStatus() {
 		logger.debug("health check being called");
 		
-		// TODO:  You should write a plugin here that checks the true health of the side-managed process
-		return 200;
+		boolean passing = checkManager.allHealthChecksPassing();
+		
+		return passing ? 200 : 503;
 	}
 }

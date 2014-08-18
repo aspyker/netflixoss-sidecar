@@ -26,6 +26,19 @@ public class CheckManager {
 	private static final Logger logger = LoggerFactory.getLogger(CheckManager.class);
 	private ArrayList<Check> checks;
 	private ArrayList<ScheduledExecutorService> checkers;
+	
+	public boolean allHealthChecksPassing() {
+		for (Check check : checks) {
+			if (!check.getCurrentStatus().equals(Check.StatusType.HEALTHY)) {
+				if (check.getLastStatusRepeated() > 3) {
+					logger.debug("returning false");
+					return false;
+				}
+			}
+		}
+		logger.debug("returning true");
+		return true;
+	}
 
 	@PostConstruct
 	public void init() {
