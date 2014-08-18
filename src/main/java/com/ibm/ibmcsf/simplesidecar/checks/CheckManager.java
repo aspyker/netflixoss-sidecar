@@ -48,7 +48,7 @@ public class CheckManager {
 		if (DynamicPropertyFactory.getInstance().getBooleanProperty(PROP_ROOT + "enabled", true).get()) {
 			for (Check check: checks) {
 				CheckRunner runner = new CheckRunner(check);
-				ScheduledExecutorService service = Executors.newScheduledThreadPool(2, new CheckerThreadFactory("checker-thread-"+check.getId()));
+				ScheduledExecutorService service = Executors.newScheduledThreadPool(2, new DaemonNamedThreadFactory("checker-thread-"+check.getId()));
 				checkers.add(service);
 				service.scheduleAtFixedRate(runner, 0, check.getInterval(), TimeUnit.MILLISECONDS);
 			}
@@ -88,19 +88,5 @@ public class CheckManager {
 			Check check = new Check(id, desc, interval, script, workingDir, className);
 			checks.add(check);
 		}
-	}
-	
-	class CheckerThreadFactory implements ThreadFactory {
-		private String threadName;
-		
-		public CheckerThreadFactory(String threadName) {
-			this.threadName = threadName;
-		}
-		
-	    public Thread newThread(Runnable r) {
-	        Thread thread = new Thread(r, threadName);
-	        thread.setDaemon(true);
-	        return thread;
-	    }
-	}
+	}	
 }
