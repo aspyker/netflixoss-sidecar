@@ -58,6 +58,9 @@ public class ScriptCheckExecutor implements CheckExecutor {
 		catch (InterruptedException ie) {
 			logger.error(ie.toString());
 		}
+		catch (Exception e) {
+			logger.error(e.toString());
+		}
 		return 0;
 	}
 
