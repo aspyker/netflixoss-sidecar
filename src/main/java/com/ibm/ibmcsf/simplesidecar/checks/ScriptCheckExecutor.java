@@ -17,7 +17,7 @@ import com.netflix.config.DynamicPropertyFactory;
 
 public class ScriptCheckExecutor implements CheckExecutor {
 	private static final Logger logger = LoggerFactory.getLogger(ScriptCheckExecutor.class);
-	private static DynamicIntProperty timeout = DynamicPropertyFactory.getInstance().getIntProperty(CheckManager.PROP_ROOT + ".defaultscripttimeout", 1000);
+	private static DynamicIntProperty timeout = DynamicPropertyFactory.getInstance().getIntProperty(CheckManager.PROP_ROOT + "defaultscripttimeout", 1000);
 
 	@Override
 	public int runCheck(Check check) {
