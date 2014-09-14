@@ -39,8 +39,10 @@ public class ScriptCheckExecutor implements CheckExecutor {
 			
 			Thread.sleep(timeout.get());
 			
-			int exitValue = p.exitValue();
-			switch (exitValue) {
+			int exitValue;
+			try {
+				exitValue = p.exitValue();
+				switch (exitValue) {
 				case 0:
 					check.addStatus(StatusType.HEALTHY);
 					break;
@@ -50,7 +52,14 @@ public class ScriptCheckExecutor implements CheckExecutor {
 				default:
 					check.addStatus(StatusType.UNHEALTHY);
 					break;
+				}
 			}
+			catch (IllegalThreadStateException ise) {
+				// this happens if process hasn't yet exited
+				logger.warn("the check " + check + " isn't completing on time");
+				check.addStatus(StatusType.UNKNOWN);
+			}
+			
 		}
 		catch (IOException ioe) {
 			logger.error(ioe.toString());
